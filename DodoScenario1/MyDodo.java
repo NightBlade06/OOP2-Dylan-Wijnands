@@ -9,7 +9,7 @@ public class MyDodo extends Dodo
 {
     private int myNrOfEggsHatched;
     public int EmptySpace;
-    
+
     public MyDodo() {
         super( EAST );
         myNrOfEggsHatched = 0;
@@ -51,50 +51,78 @@ public class MyDodo extends Dodo
             return true;
         }
     }
-    
-    public void dolhofSolver() {
-        while(onNest() == false) {
-            move();
-            if (getDirection() == EAST) {
+
+    public Boolean isFenceRight() {
+        turnRight();
+        if (fenceAhead()){
+            turnLeft();
+            return true;
+        } 
+        else {
+            turnLeft();
+            return false;
+        }
+
+    }
+
+    public void doolhofSolver() {
+        while(!onNest()) {
+            if (isFenceRight() == false) {
                 turnRight();
-                if (fenceAhead() == false) {
-                    move();
-                }
-                else if (fenceAhead() == true && getDirection() == SOUTH) {
-                    turn180();
-                }
+                move();
             }
-                        if (getDirection() == SOUTH) {
-                turnRight();
-                if (fenceAhead() == false) {
-                    move();
-                }
-                else if (fenceAhead() == true && getDirection() == WEST) {
-                    turn180();
-                }
-            }
-                        if (getDirection() == WEST) {
-                turnRight();
-                if (fenceAhead() == false) {
-                    move();
-                }
-                else if (fenceAhead() == true && getDirection() == NORTH) {
-                    turn180();
-                }
-            }
-                        if (getDirection() == NORTH) {
-                turnRight();
-                if (fenceAhead() == false) {
-                    move();
-                }
-                else if (fenceAhead() == true && getDirection() == EAST) {
-                    turn180();
-                }
+            if (!fenceAhead() || nestAhead()){
+                move();
+            } 
+            else {
+                turnLeft();
             }
         }
     }
-    
-        public boolean GrainAhead() {
+
+    public void moveToLocation(int inputX, int inputY) {
+        int dodoX = getX();
+        int dodoY = getY();
+        int moveX = dodoX - inputX;
+        int moveY = dodoY - inputY;
+        if (moveX > 0) {
+            int i=0;
+            setDirection(WEST);
+            while (i < moveX) {
+                move();
+                i = i + 1;
+            }
+        }
+        else if (moveX < 0) {
+            int i=0;
+            setDirection(EAST);
+            while (i > moveX) {
+                move();
+                i = i -1;
+            }
+            setDirection(EAST);
+        }
+        if (moveY > 0) {
+            int i=0;
+            setDirection(NORTH);
+            while (i < moveY) {
+                move();
+                i = i + 1;
+            }
+            setDirection(EAST);
+        }
+        else if (moveX < 0) {
+            int i=0;
+            setDirection(SOUTH);
+            while (i > moveY) {
+                move();
+                i = i -1;
+            }
+            setDirection(EAST);
+        }
+    }
+
+    public boolean GrainAhead() {
         move();
         if ( onGrain() == true ){
             stepOneCellBackwards();
@@ -104,7 +132,7 @@ public class MyDodo extends Dodo
             return false;
         }
     }
-    
+
     public void climbOverFence() {
         if (fenceAhead() == true && getDirection() == EAST){
             turnLeft();
@@ -126,11 +154,20 @@ public class MyDodo extends Dodo
             move();
             turnRight();
             turn180();
+        } else if (fenceAhead() == true && getDirection() == WEST) {
+            turnRight();
+            move();
+            turnLeft();
+            move();
+            move();
+            turnLeft();
+            move();
+            turnRight();
         }
         else {
             System.out.println("There is no fence nearby to climb");
         }
-        
+
     }
 
     /**
@@ -149,7 +186,7 @@ public class MyDodo extends Dodo
             showError( "There was no egg in this cell" );
         }
     }
-    
+
     /**
      * Returns the number of eggs Dodo has hatched so far.
      * 
@@ -158,7 +195,7 @@ public class MyDodo extends Dodo
     public int getNrOfEggsHatched() {
         return myNrOfEggsHatched;
     }
-    
+
     /**
      * Move given number of cells forward in the current direction.
      * 
@@ -176,9 +213,6 @@ public class MyDodo extends Dodo
         }
     }
 
-    
-    
-    
     /**
      * Walks to edge of the world printing the coordinates at each step
      * 
@@ -187,9 +221,31 @@ public class MyDodo extends Dodo
      *              Coordinates of each cell printed in the console.
      */
 
-    public void walkToWorldEdgePrintingCoordinates( ){
+    public void walkToWorldEdge(){
         while( ! borderAhead() ){
             move();
+        }
+    }
+
+    public void goToEgg() {
+        while( !onEgg() ){
+            move();
+        }
+    }
+
+    public void goBackToStartOfRowAndFaceBack() {
+        walkToWorldEdge();
+        turn180();
+        walkToWorldEdge();
+        turn180();
+    }
+
+    public void walkToWorldEdgeClimbingOverFences() {
+        while( ! borderAhead() ){
+            move();
+            if (fenceAhead() == true) {
+                climbOverFence();
+            }
         }
     }
 
@@ -210,16 +266,72 @@ public class MyDodo extends Dodo
             return false;
         }else{
             return true;
-      }
+        }
     } 
-    
+
     public void turn180() {
         turnRight();
         turnRight();
     }
+
     public void stepOneCellBackwards() {
         turn180();
         move();
         turn180();
+    }
+
+    public void pickUpGrainsAndPrintCoordinates() {
+        while(!borderAhead()) {
+            if(onGrain()) {
+                pickUpGrain();
+                System.out.println("X = " + getX() + ". Y = " + getY() + ", ");
+                move();
+            } else{move();}
+        }
+        if(onGrain()) {
+            pickUpGrain();
+            System.out.println("X = " + getX() + ". Y = " + getY() + ", ");}
+    }
+
+    public void layEggWhileWalkingToWolrdBorder() {
+        if(onNest() && canLayEgg()) {
+            layEgg();
+        }
+        while(!borderAhead()) {
+            move();
+            if(onNest() && canLayEgg()) {
+                layEgg();
+            }
+        }
+
+    }
+
+    public void AroundFenceAndLayEgg() {
+        while(!onEgg()) {
+            if(!fenceAhead()) {
+                turnRight();}
+            if(fenceAhead() == true){
+                turnLeft();
+                move();
+            } else {move();}
+        }
+    }
+
+    public void eggTrailToNest(){
+        while(!onNest()) {
+            if(eggAhead() == true) {
+                move();
+                pickUpEgg();
+            } else{turnRight();}
+            if(nestAhead() == true) {
+                move();
+            } 
+        }
+    }
+
+    public void faceEast() {
+        while(getDirection() != EAST) {
+            turnLeft();
+        }
     }
 }
