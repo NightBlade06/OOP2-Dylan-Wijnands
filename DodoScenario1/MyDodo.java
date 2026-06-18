@@ -1,5 +1,7 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
-
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 /**
  *
  * @author Sjaak Smetsers & Renske Smetsers-Weeda
@@ -80,13 +82,151 @@ public class MyDodo extends Dodo
         }
     }
 
+    public void layTrailOfEggs (int inputEgg) {
+        int i = 0;
+        while (i < inputEgg) {
+            layEgg();
+            i = i + 1;
+            if (i != inputEgg) {
+                move();
+            }
+        }
+    }
+
+    public void rowWithMostEgg () {
+        List<Object> listEgg = new ArrayList<Object>();
+        boolean countEnd = false;
+        int eggCountRow = 0;
+        int rowMostEggs = 0;
+        int posX = getX();
+        int posY = getY();
+        int posSum = posX + posY;
+        int worldX = getWorld().getWidth() -1;
+        int worldY = getWorld().getHeight() -1;
+        moveToLocation(0,0);
+
+        while (posSum != 0 || countEnd == false) 
+        {
+            if (posX == 0 && posY == worldY ) {
+                moveToLocation(0,0);
+                ArrayList<Integer> maxIndexen = new ArrayList<>();
+                for (int i = 0; i < listEgg.size(); i++) {
+                    if (listEgg.get(i).equals(rowMostEggs)) {
+                        maxIndexen.add(i);
+                    }
+                }
+                System.out.print(maxIndexen);
+                countEnd = true;
+            }
+
+            if (borderAhead() == true && getDirection() == EAST) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountRow = eggCountRow + 1;
+                    if (eggCountRow >= rowMostEggs) {
+                        rowMostEggs = eggCountRow;
+                    }
+                }
+                listEgg.add(eggCountRow);
+                eggCountRow = 0;
+                setDirection(SOUTH);
+                move();
+                setDirection(WEST);
+            }
+            else if (borderAhead() == true && getDirection() == WEST) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountRow = eggCountRow + 1;
+                    if (eggCountRow >= rowMostEggs) {
+                        rowMostEggs = eggCountRow;
+                    }
+                }
+                listEgg.add(eggCountRow);
+                eggCountRow = 0;
+                setDirection(SOUTH);
+                move();
+                setDirection(EAST);
+            }
+            
+            if (borderAhead() == false) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountRow = eggCountRow + 1;
+                    if (eggCountRow >= rowMostEggs) {
+                        rowMostEggs = eggCountRow;
+                    }
+                }
+                posX = getX();
+                posY = getY();
+                posSum = posX + posY;
+                move();
+            }
+        }
+    }
+
+    public void worldWideEggCount () 
+    {
+        int eggCountTotal = 0;
+        int posX = getX();
+        int posY = getY();
+        int posSum = posX + posY;
+        int worldX = getWorld().getWidth() -1;
+        int worldY = getWorld().getHeight() -1;
+        moveToLocation(0,0);
+
+        while (eggCountTotal == 0 || posSum != 0) 
+        {
+            if (posX == 0 && posY == worldY ) {
+                moveToLocation(0,0);
+                System.out.print(eggCountTotal);
+            }
+
+            if (borderAhead() == true && getDirection() == EAST) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountTotal = eggCountTotal + 1;
+                }
+                setDirection(SOUTH);
+                move();
+                setDirection(WEST);
+            }
+
+            else if (borderAhead() == true && getDirection() == WEST) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountTotal = eggCountTotal + 1;
+                }
+                setDirection(SOUTH);
+                move();
+                setDirection(EAST);
+            }
+
+            if (borderAhead() == false) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountTotal = eggCountTotal + 1;
+                }
+                posX = getX();
+                posY = getY();
+                posSum = posX + posY;
+                move();
+            }
+        }
+    }
+
     public void moveToLocation(int inputX, int inputY) {
         int dodoX = getX();
         int dodoY = getY();
         int moveX = dodoX - inputX;
         int moveY = dodoY - inputY;
         if (moveX > 0) {
-            int i=0;
+            int i = 0;
             setDirection(WEST);
             while (i < moveX) {
                 move();
