@@ -93,6 +93,59 @@ public class MyDodo extends Dodo
         }
     }
 
+    public void rowEggAverage () {
+        boolean countEnd = false;
+        double eggCountRow = 0;
+        int posX = getX();
+        int posY = getY();
+        int posSum = posX + posY;
+        int worldX = getWorld().getWidth() -1;
+        int worldY = getWorld().getHeight() -1;
+        moveToLocation(0,0);
+
+        while (posSum != 0 || countEnd == false) 
+        {
+            if (posX == 0 && posY == worldY ) {
+                moveToLocation(0,0);
+                System.out.println("average eggs per row:" + eggCountRow / getWorld().getWidth());
+                countEnd = true;
+            }
+
+            if (borderAhead() == true && getDirection() == EAST) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountRow = eggCountRow + 1;
+                }
+                setDirection(SOUTH);
+                move();
+                setDirection(WEST);
+            }
+            else if (borderAhead() == true && getDirection() == WEST) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountRow = eggCountRow + 1;
+                }
+                setDirection(SOUTH);
+                move();
+                setDirection(EAST);
+            }
+            
+            if (borderAhead() == false) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountRow = eggCountRow + 1;
+                }
+                posX = getX();
+                posY = getY();
+                posSum = posX + posY;
+                move();
+            }
+        }
+    }
+    
     public void rowWithMostEgg () {
         List<Object> listEgg = new ArrayList<Object>();
         boolean countEnd = false;
@@ -166,6 +219,8 @@ public class MyDodo extends Dodo
             }
         }
     }
+    
+    
 
     public void worldWideEggCount () 
     {
