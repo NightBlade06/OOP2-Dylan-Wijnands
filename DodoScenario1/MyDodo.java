@@ -81,6 +81,107 @@ public class MyDodo extends Dodo
             }
         }
     }
+    
+    public Boolean isWorldBorderRight() {
+        turnRight();
+        if (borderAhead()){
+            turnLeft();
+            return true;
+        } 
+        else {
+            turnLeft();
+            return false;
+        }
+    }
+    
+    public void monumentOfEggs() {
+        boolean endOfLoop = false;
+        int originXPosition = getX();
+        int originYPosition = getY();
+        int yMovement = 0;
+        int xMovement = -1;
+        while (endOfLoop == false){
+            for (int i = 0; i <= xMovement; i++) {
+                if (!onEgg()) {
+                    layEgg();}
+                move();
+            }
+            if (!onEgg()) {
+                layEgg();}
+            xMovement++;
+            originYPosition++;
+            if(isWorldBorderRight() == true || borderAhead() == true) {
+                endOfLoop = true;
+                break;
+            } 
+            moveToLocation(originXPosition,originYPosition);
+        }
+    }
+
+    public void steadyMonument() {
+        int worldX = getWorld().getWidth() -1;
+        int originXPosition = getX();
+        int originYPosition = getY();
+        int maxXMovement = 0;
+        int amountOfEggsnNeedTobeLayed = 1;
+        boolean endOfLoop = false;
+        maxXMovement =  worldX - originXPosition; 
+        maxXMovement++;
+        while (endOfLoop == false) {
+            System.out.println("the eggs needed to be dropped are " + amountOfEggsnNeedTobeLayed);
+            for (int layedEgg = 0; layedEgg < amountOfEggsnNeedTobeLayed;) {
+                if (!onEgg()) {
+                    layEgg();}
+                layedEgg++;
+                move();
+            }
+            originYPosition++;
+            moveToLocation(originXPosition,originYPosition);
+            amountOfEggsnNeedTobeLayed = amountOfEggsnNeedTobeLayed * 2;
+            if (amountOfEggsnNeedTobeLayed > maxXMovement) {
+                break;}
+        }
+    }
+
+    public void pyramidOffEggs() {
+        int worldX = getWorld().getWidth() -1;
+        int originXPosition = getX();
+        int originYPosition = getY();
+        int maxXMovement = 0;
+        int minXMovement = 0;
+        int xMovementBackwards = 0;
+        int amountOfEggsnNeedTobeLayed = 1;
+        int breakCalculation = 0;
+        boolean endOfLoop = false;
+        maxXMovement =  worldX - originXPosition; 
+        minXMovement =  worldX - originXPosition;
+        while (endOfLoop == false){
+            for (int i = 0; i < xMovementBackwards; i++) {
+                setDirection(WEST);
+                move();
+            }
+            faceEast();
+            for (int layedEgg = 0; layedEgg < amountOfEggsnNeedTobeLayed;) {
+                if (!onEgg()) {
+                    layEgg();}
+                layedEgg++;
+                move();
+            }
+            originYPosition++;
+            xMovementBackwards++;
+            amountOfEggsnNeedTobeLayed = amountOfEggsnNeedTobeLayed + 2;
+            moveToLocation(originXPosition,originYPosition);
+            breakCalculation = amountOfEggsnNeedTobeLayed;
+            breakCalculation--;
+            breakCalculation = breakCalculation/2; 
+            breakCalculation++;
+            System.out.print(breakCalculation);
+            if (breakCalculation > maxXMovement || breakCalculation > minXMovement) {
+                System.out.print("Break actovated");
+                break;
+            }
+        }
+    }
 
     public void layTrailOfEggs (int inputEgg) {
         int i = 0;
@@ -91,6 +192,58 @@ public class MyDodo extends Dodo
                 move();
             }
         }
+    }
+
+    public void eggRow() {
+        int eggCountRow = 0;
+        int posX = getX();
+        for (int i = 0; i <= 4; i++) 
+        {
+            if (borderAhead() == true || posX == 5) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountRow = eggCountRow + 1;
+                }
+            }
+
+            if (borderAhead() == false) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountRow = eggCountRow + 1;
+                }
+                posX = getX();
+                move();
+            }
+        }
+        System.out.println("eggs in row:" + eggCountRow);
+    }
+
+    public void eggColomn() {
+        int eggCountColomn = 0;
+        int posY = getY();
+        turnRight();
+        for (int i = 0; i <= 4; i++) 
+        {
+            if (borderAhead() == true || posY == 5) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountColomn = eggCountColomn + 1;
+                }
+            }
+
+            if (borderAhead() == false) 
+            {
+                if (onEgg() == true) 
+                {
+                    eggCountColomn = eggCountColomn + 1;
+                }
+                move();
+            }
+        }
+        System.out.println("eggs in colomn:" + eggCountColomn);
     }
 
     public void rowEggAverage () {
@@ -131,7 +284,7 @@ public class MyDodo extends Dodo
                 move();
                 setDirection(EAST);
             }
-            
+
             if (borderAhead() == false) 
             {
                 if (onEgg() == true) 
@@ -145,7 +298,7 @@ public class MyDodo extends Dodo
             }
         }
     }
-    
+
     public void rowWithMostEgg () {
         List<Object> listEgg = new ArrayList<Object>();
         boolean countEnd = false;
@@ -202,7 +355,7 @@ public class MyDodo extends Dodo
                 move();
                 setDirection(EAST);
             }
-            
+
             if (borderAhead() == false) 
             {
                 if (onEgg() == true) 
@@ -219,8 +372,7 @@ public class MyDodo extends Dodo
             }
         }
     }
-    
-    
+
 
     public void worldWideEggCount () 
     {
