@@ -1,0 +1,23 @@
+#BlueJ class context
+comment0.target=MyDodo
+comment1.params=
+comment1.target=MyDodo()
+comment10.params=eggList
+comment10.target=BlueEgg\ findNearestEgg(java.util.List)
+comment2.params=
+comment2.target=void\ move()
+comment3.params=
+comment3.target=boolean\ canMove()
+comment4.params=
+comment4.target=void\ MimiGoGoGo()
+comment5.params=inputX\ inputY
+comment5.target=void\ moveToLocation(int,\ int)
+comment6.params=
+comment6.target=GoldenEgg\ findGoldenEgg()
+comment7.params=
+comment7.target=java.util.List\ getListOfBlueEggs()
+comment8.params=eggList\ egg
+comment8.target=void\ removeCollectedEgg(java.util.List,\ BlueEgg)
+comment9.params=value
+comment9.target=void\ addScore(int)
+numComments=11
